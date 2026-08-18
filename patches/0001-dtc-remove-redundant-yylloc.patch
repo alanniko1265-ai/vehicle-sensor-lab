@@ -1,0 +1,30 @@
+From e33a814e772cdc36436c8c188d8c42d019fda639 Mon Sep 17 00:00:00 2001
+Subject: [PATCH] scripts/dtc: remove redundant YYLOC global declaration
+
+Backport the upstream Linux fix needed to build the vendor 4.19 kernel
+with host GCC versions that default to -fno-common.
+
+Both the generated parser and the lexer declared yylloc. The parser header
+already provides the required declaration, so the lexer declaration is
+redundant and causes a multiple-definition link failure on newer hosts.
+
+Upstream commit: e33a814e772cdc36436c8c188d8c42d019fda639
+
+---
+ scripts/dtc/dtc-lexer.l | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/scripts/dtc/dtc-lexer.l b/scripts/dtc/dtc-lexer.l
+--- a/scripts/dtc/dtc-lexer.l
++++ b/scripts/dtc/dtc-lexer.l
+@@ -38,7 +38,6 @@ LINECOMMENT	"//".*\n
+ #include "srcpos.h"
+ #include "dtc-parser.tab.h"
+ 
+-YYLTYPE yylloc;
+ extern bool treesource_error;
+ 
+ /* CAUTION: this will stop working if we ever use yyless() or yyunput() */
+-- 
+2.34.1
+
