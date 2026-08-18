@@ -82,7 +82,7 @@
 
 ## 当前进度
 
-项目目前处于 **阶段 0：内核模块构建环境与最小模块闭环**。
+项目已经完成 **阶段 0：内核模块构建环境与最小模块闭环**，即将进入阶段 1 的字符设备实现。
 
 已经完成：
 
@@ -92,15 +92,18 @@
 - 建立独立内核构建目录并完成 `olddefconfig`；
 - 验证生成的 `kernelrelease` 为 `4.19.35-imx6`；
 - 定位并修复旧版 DTC 与新版主机 GCC 的 `yylloc` 兼容问题；
-- 建立最小内核模块源码、Kbuild Makefile 和工程目录。
+- 生成完整 `Module.symvers` 并成功交叉编译 ARM 32 位模块；
+- 确认模块 `vermagic` 与开发板运行内核匹配；
+- 在 i.MX6ULL 上完成 `insmod`、`lsmod`、`dmesg` 和 `rmmod` 闭环；
+- 验证初始化函数与退出函数均被内核实际执行。
 
-当前待验证：
+下一阶段：
 
-- 补丁后的内核增量构建及 `Module.symvers`；
-- `vehicle_sensor_module.ko` 的架构和 `vermagic`；
-- 开发板上的 `insmod`、`rmmod` 与内核日志闭环。
+- 创建 `/dev/vehicle_sensor`；
+- 实现第一版固定事件读取；
+- 编写最小用户态 C 测试程序。
 
-详细记录见 [实施进度](./docs/progress.md)。
+详细记录见 [实施进度](./docs/progress.md) 和 [阶段 0 验收记录](./docs/stage0_validation.md)。
 
 ## 开发路线
 
@@ -131,6 +134,7 @@
     ├── architecture.md     # 架构与接口设计
     ├── prerequisite_guide.md
     ├── day55_start.md      # 阶段 0 原始实施记录
+    ├── stage0_validation.md # 阶段 0 实机验收结果
     └── progress.md         # 已验证进度和当前断点
 ```
 
@@ -142,6 +146,7 @@
 - [架构设计](./docs/architecture.md)
 - [前置知识](./docs/prerequisite_guide.md)
 - [阶段 0 实施记录](./docs/day55_start.md)
+- [阶段 0 验收结果](./docs/stage0_validation.md)
 
 ## 后续衔接
 

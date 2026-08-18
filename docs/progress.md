@@ -2,7 +2,7 @@
 
 本文件只记录已经验证的结果、当前断点和紧接着要做的事情。计划中的功能不会提前标记为完成。
 
-## 2026-08-18：阶段 0——驱动构建环境
+## 2026-08-18：阶段 0——驱动构建环境（已完成）
 
 ### 已完成
 
@@ -14,21 +14,30 @@
 - 使用板端配置完成 `olddefconfig`；
 - 验证 `ARCH=arm LOCALVERSION=-imx6` 时 `kernelrelease` 为 `4.19.35-imx6`；
 - 定位旧版 DTC 与新版主机 GCC 的 `yylloc` 重复定义问题；
-- 应用 `patches/0001-dtc-remove-redundant-yylloc.patch` 并通过 `git diff --check`。
+- 应用 `patches/0001-dtc-remove-redundant-yylloc.patch` 并通过 `git diff --check`；
+- 完成补丁后的内核增量构建，生成 641276 字节的 `Module.symvers`；
+- 编译 `vehicle_sensor_module.ko`，确认其为 ARM 32 位 EABI5 模块；
+- 确认模块 `vermagic` 为 `4.19.35-imx6`；
+- 通过 SCP 将模块上传至 i.MX6ULL；
+- 使用 `insmod` 加载模块并在 `lsmod` 中确认驻留；
+- 在 `dmesg` 中确认 `vehicle_sensor_init()` 输出 loaded 日志；
+- 使用 `rmmod` 卸载模块并确认 `vehicle_sensor_exit()` 输出 unloaded 日志。
 
-### 当前断点
+详细证据见 [阶段 0 验收记录](./stage0_validation.md)。
 
-- 需要确认补丁后的完整内核增量构建成功；
-- 需要确认内核构建目录中的 `Module.symvers` 已生成；
-- 最小模块源码已经具备加载和卸载日志，但尚未完成板端闭环验证。
+## 当前断点：阶段 1——第一个字符设备
 
-### 下一步验收
+- 阶段 0 已经闭环，不再重复准备内核环境；
+- 下一目标是创建 `/dev/vehicle_sensor`；
+- 第一版设备只返回一条固定事件，暂不加入定时器、`poll`、`ioctl` 或真实传感器。
 
-1. 编译 `driver/vehicle_sensor_module.c`，生成 ARM 32 位 `.ko`；
-2. 用 `modinfo` 检查 `vermagic=4.19.35-imx6`；
-3. 上传至 i.MX6ULL；
-4. 使用 `insmod` 和 `rmmod` 完成一次加载、卸载；
-5. 在 `dmesg` 中看到对应的 loaded/unloaded 日志。
+### 阶段 1 下一步验收
+
+1. 理解设备号、设备节点和 `file_operations` 的关系；
+2. 注册最小字符设备；
+3. 加载后生成 `/dev/vehicle_sensor`；
+4. 编写用户态 C 程序打开设备；
+5. 从设备读取一条固定事件并正确处理返回值。
 
 ## 已确认的项目边界
 
